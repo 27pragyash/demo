@@ -27,19 +27,24 @@ public class SalaryController {
     public ResponseEntity<?> getSalary(@PathVariable Long employeeId) {
         String loggedInEmployeeId = getLoggedInEmployeeId();
 
-        // Only allow access if ADMIN or requesting own salary
         if (isAdmin() || loggedInEmployeeId.equals(String.valueOf(employeeId))) {
             Optional<Salary> salary = salaryService.findByEmployeeId(employeeId);
-            return salary.map(ResponseEntity::ok)
-                    .orElseGet(() -> ResponseEntity.status(HttpStatus.FORBIDDEN).build());
+
+            return salary.<ResponseEntity<?>>map(ResponseEntity::ok)
+                    .orElseGet(() -> ResponseEntity
+                            .status(HttpStatus.NOT_FOUND)
+                            .body("Salary record not found for employee ID " + employeeId));
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied");
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body("Access Denied: You are not authorized to view this salary.");
     }
+
 
     private String getLoggedInEmployeeId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName(); // employeeId is used as subject in JWT
+        return auth.getName();
     }
 
     private boolean isAdmin() {

@@ -10,6 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
@@ -18,15 +20,15 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployee(@PathVariable String id) {
+    public ResponseEntity<?> getEmployee(@PathVariable String id) {
         String loggedInEmployeeId = getLoggedInEmployeeId();
 
         if (isAdmin() || loggedInEmployeeId.equals(id)) {
-
             return ResponseEntity.ok(employeeService.findById(Long.valueOf(id)));
         } else {
-
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body("Forbidden: You don't have permission to access this resource.");
         }
     }
 

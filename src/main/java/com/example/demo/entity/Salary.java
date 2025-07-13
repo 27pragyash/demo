@@ -5,6 +5,8 @@ import lombok.*;
 
 @Entity
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Salary {
 
     @Id
