@@ -13,15 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth") // Optional: groups auth endpoints
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private JwtService jwtService;
-
     @Autowired
     private EmployeeService employeeService;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -35,7 +33,6 @@ public class AuthController {
 
         Employee employee = optionalEmployee.get();
 
-        // ✅ Securely compare hashed password
         if (!passwordEncoder.matches(request.getPassword(), employee.getPassword())) {
             return ResponseEntity.status(401).body("Invalid username or password");
         }

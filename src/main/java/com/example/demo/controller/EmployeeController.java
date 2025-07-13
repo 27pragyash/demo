@@ -34,7 +34,7 @@ public class EmployeeController {
 
     private String getLoggedInEmployeeId() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        return auth.getName(); // this is employeeId because of setSubject(employeeId)
+        return auth.getName();
     }
 
     private boolean isAdmin() {
